@@ -4,9 +4,11 @@ import imgSrc3 from '../assets/images/bg_todo03.jpg'
 import imgSrc4 from '../assets/images/bg_todo04.jpg'
 import imgSrc5 from '../assets/images/bg_todo05.jpg'
 import LazyloadingNormal from './LazyloadNormal'
+import LazyObserver from './LazyObserver'
 import './style.css'
 
 const imgSrcArr = [imgSrc1, imgSrc2, imgSrc3, imgSrc4, imgSrc5]
+
 function component() {
   const h1 = document.createElement('H1')
   console.log(h1)
@@ -40,4 +42,20 @@ for (let i = 0; i < 50; i++) {
   ㄴ 대체제로 data-src 로 대체한다
   2. 이미지에게 뷰포트에 들어가자 마자 로드 될 수 있도록 트리거 하려는 요소가 필요합니다 
 */
-LazyloadingNormal()
+// LazyloadingNormal()
+// document.addEventListener('DOMContentLoaded', LazyloadingNormal)
+
+document.addEventListener('DOMContentLoaded', lazyLoader)
+
+/**
+ * 
+ * 모던 브라우저의 IntersectionObserver 가 있을 경우 IntersectionObserver을 사용 
+ * 그밖에는 스크롤 및 다른 이벤트 적용
+ */
+function lazyLoader() {
+  if ('IntersectionObserver' in window) {
+    LazyObserver()
+  } else {
+    LazyloadingNormal()
+  }
+}

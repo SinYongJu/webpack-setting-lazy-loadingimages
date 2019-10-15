@@ -59,6 +59,5 @@ function throttle(func) {
     throttleTimeout = setTimeout(func, 10)
   }
 }
-document.addEventListener('DOMContentLoaded', LazyloadingNormal)
 
 export default LazyloadingNormal
