@@ -27,7 +27,7 @@ function lazyHandler(e) {
   console.log(this)
 }
 
-const f1 = async () => {
+async function f1() {
   console.log('as')
 
   await setTimeout(() => {
