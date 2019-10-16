@@ -18,15 +18,15 @@
  * the management of intersections as it sees fit.
  */
 
-function LazyObserver(hasIntersectionObserver) {
+function LazyObserver() {
   let lazyImages = null
   console.log('실행')
-  hasIntersectionObserver
-  // if ('IntersectionObserver' in window) {
-  lazyImages = document.querySelectorAll('img.lazy')
-  const imgObserber = new IntersectionObserver(observerHandler)
-  Array.from(lazyImages).map(item => imgObserber.observe(item))
-  // }
+
+  return (() => {
+    lazyImages = document.querySelectorAll('img.lazy')
+    const imgObserber = new IntersectionObserver(observerHandler)
+    Array.from(lazyImages).map(item => imgObserber.observe(item))
+  })()
 }
 
 function observerHandler(entries, obserber) {
@@ -35,10 +35,11 @@ function observerHandler(entries, obserber) {
     if (entry.isIntersecting) {
       target.classList.remove('lazy')
       target.src = target.dataset.src
-    } else {
-      target.classList.add('lazy')
-      target.src = ''
     }
+    //  else {
+    //   target.classList.add('lazy')
+    //   target.src = ''
+    // }
   })
 }
 

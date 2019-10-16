@@ -7,8 +7,8 @@ import LazyloadingNormal from './LazyloadNormal'
 import LazyObserver from './LazyObserver'
 import './style.css'
 
-const IS_TEST = true
-const lOAD_DATA_LENGTH = 100
+const IS_TEST = !true
+const lOAD_DATA_LENGTH = 50
 const imgSrcArr = [imgSrc1, imgSrc2, imgSrc3, imgSrc4, imgSrc5]
 const imgWidthHeightClass = [
   'img_500x200',
@@ -31,7 +31,7 @@ function img() {
 }
 
 function imgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
-  if (!index || !imgSrcArr || !imgWidthHeightClass) {
+  if ((index !== 0 && !index) || !imgSrcArr || !imgWidthHeightClass) {
     index = 0
     imgSrcArr = [imgSrc2]
     imgWidthHeightClass = ['img_500x200']
@@ -39,6 +39,16 @@ function imgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
   el.setAttribute('data-src', imgSrcArr[index])
   el.classList.add(imgWidthHeightClass[index])
   el.id = index
+  return el
+}
+function pureimgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
+  if ((index !== 0 && !index) || !imgSrcArr || !imgWidthHeightClass) {
+    index = 0
+    imgSrcArr = [imgSrc2]
+    imgWidthHeightClass = ['img_500x200']
+  }
+  el.setAttribute('src', imgSrcArr[index])
+  el.classList.add(imgWidthHeightClass[index])
   return el
 }
 
@@ -61,10 +71,14 @@ function init() {
         imgElMaker(img(), i % 5, imgSrcArr, imgWidthHeightClass),
       )
     } else {
-      document.body.appendChild(imgElMaker(img()))
+      document.body.appendChild(
+        pureimgElMaker(img(), i % 5, imgSrcArr, imgWidthHeightClass),
+      )
     }
   }
-  document.addEventListener('DOMContentLoaded', lazyLoader)
+  if (!IS_TEST) {
+    document.addEventListener('DOMContentLoaded', lazyLoader)
+  }
 
   /**
    *
@@ -82,5 +96,4 @@ function lazyLoader() {
   } else {
     LazyloadingNormal()
   }
-  // LazyloadingNormal()
 }

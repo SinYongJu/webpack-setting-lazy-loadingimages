@@ -45,32 +45,24 @@ function isCurrentViewPortImageSrc(
 }
 
 function addLazyClass(isLazy, el) {
-  if (isLazy) {
-    el.src = ''
-    el.classList.add('lazy')
-  } else {
-    el.classList.remove('lazy')
+  if (!isLazy) {
+    //   el.src = ''
+    //   el.classList.add('lazy')
+    // } else {
     el.src = el.dataset.src
+    el.classList.remove('lazy')
   }
 }
 
 function LazyloadingNormal(e) {
   console.log('DOMContentLoaded')
-  let lazyImages = Array.from(document.querySelectorAll('img.lazy'))
+  let lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
+
   const lazyloader = () => {
     let scrollTop = window.pageYOffset
     lazyImages.map(item => {
       //here
-      let { id, offsetTop, clientHeight } = item
-      // if (
-
-      // ) {
-      //   item.classList.add('lazy')
-      //   item.src = ''
-      // } else {
-      //   item.classList.remove('lazy')
-      //   item.src = item.dataset.src
-      // }
+      let { offsetTop, clientHeight } = item
       addLazyClass(
         isCurrentViewPortImageSrc(
           offsetTop,
@@ -87,6 +79,7 @@ function LazyloadingNormal(e) {
       window.removeEventListener('orientationChange', lazyThrottle)
     }
   }
+
   const lazyThrottle = throttle(lazyloader)
   // throttle(() => console.log('작동중'))()
   lazyThrottle() // 시작시 화면에 따른 로딩을 위함
@@ -124,10 +117,11 @@ function LazyloadingNormal(e) {
  *
  */
 function throttle(func) {
-  let throttleTimeout
-  // console.log('클로져냐?')
+  let throttleTimeout = null
+  console.log('클로져냐?')
   return () => {
     if (throttleTimeout) {
+      console.log('1???')
       clearTimeout(throttleTimeout)
     }
     throttleTimeout = setTimeout(func, 10)
