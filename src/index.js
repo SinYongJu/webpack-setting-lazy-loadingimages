@@ -77,11 +77,10 @@ init()
 // LazyloadingNormal()
 // document.addEventListener('DOMContentLoaded', LazyloadingNormal)
 function lazyLoader() {
-  // if ('IntersectionObserver' in window) {
-  //   LazyObserver()
-  // } else {
-  //   LazyloadingNormal()
-  // }
-
-  LazyloadingNormal()
+  if ('IntersectionObserver' in window) {
+    LazyObserver()
+  } else {
+    LazyloadingNormal()
+  }
+  // LazyloadingNormal()
 }
