@@ -16,6 +16,44 @@
  *  3. img의 너비 높이를 세팅해 주어야 될듯 하다
  */
 
+/*
+if (
+  offsetTop - window.innerHeight > scrollTop + clientHeight / 5 ||
+  offsetTop + window.innerHeight < scrollTop - clientHeight / 5
+) {
+  item.src = ''
+  item.classList.add('lazy')
+} else if (
+  offsetTop > window.innerHeight + scrollTop ||
+  offsetTop < window.innerHeight + scrollTop
+) {
+  console.log(id, offsetTop + window.innerHeight, scrollTop, 'complete')
+  item.src = item.dataset.src
+  item.classList.remove('lazy')
+}*/
+
+function isCurrentViewPortImageSrc(
+  offsetTop,
+  clientHeight,
+  windowInnerHeight,
+  scrollTop,
+) {
+  return (
+    offsetTop + clientHeight < scrollTop ||
+    offsetTop - windowInnerHeight > scrollTop
+  )
+}
+
+function addLazyClass(isLazy, el) {
+  if (isLazy) {
+    el.src = ''
+    el.classList.add('lazy')
+  } else {
+    el.classList.remove('lazy')
+    el.src = el.dataset.src
+  }
+}
+
 function LazyloadingNormal(e) {
   console.log('DOMContentLoaded')
   let lazyImages = Array.from(document.querySelectorAll('img.lazy'))
@@ -23,12 +61,26 @@ function LazyloadingNormal(e) {
     let scrollTop = window.pageYOffset
     lazyImages.map(item => {
       //here
-      if (item.offsetTop < window.innerHeight + scrollTop) {
-        item.src = item.dataset.src
-        item.classList.remove('lazy')
-        console.log('lazy ok', item.id, window.innerHeight + scrollTop)
-      }
-    })
+      let { id, offsetTop, clientHeight } = item
+      // if (
+
+      // ) {
+      //   item.classList.add('lazy')
+      //   item.src = ''
+      // } else {
+      //   item.classList.remove('lazy')
+      //   item.src = item.dataset.src
+      // }
+      addLazyClass(
+        isCurrentViewPortImageSrc(
+          offsetTop,
+          clientHeight,
+          window.innerHeight,
+          scrollTop,
+        ),
+        item,
+      )
+    }) // end
     if (lazyImages.length === 0) {
       document.removeEventListener('scroll', lazyThrottle)
       window.removeEventListener('resize', lazyThrottle)
@@ -43,6 +95,28 @@ function LazyloadingNormal(e) {
   window.addEventListener('orientationChange', lazyThrottle)
 }
 
+/*
+ if (offsetTop - window.innerHeight > scrollTop - clientHeight / 2) {
+        console.log(
+          '위',
+          id,
+          offsetTop - window.innerHeight,
+          scrollTop - clientHeight,
+        )
+        item.src = ''
+        item.classList.add('lazy')
+      }
+      if (offsetTop + window.innerHeight < scrollTop + clientHeight / 2) {
+        console.log(
+          '아래',
+          id,
+          offsetTop + window.innerHeight,
+          scrollTop + clientHeight,
+        )
+        item.src = ''
+        item.classList.add('lazy')
+      }
+*/
 /**
  *
  * throttling methods
