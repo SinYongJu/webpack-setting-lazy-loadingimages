@@ -3,13 +3,33 @@ import imgSrc2 from '../assets/images/bg_todo02.jpg'
 import imgSrc3 from '../assets/images/bg_todo03.jpg'
 import imgSrc4 from '../assets/images/bg_todo04.jpg'
 import imgSrc5 from '../assets/images/bg_todo05.jpg'
+
+import imgSrcPng1 from '../assets/images/bg_todo02.png'
+import imgSrcPng1_3x from '../assets/images/bg_todo02_3x.png'
+import imgSrcPng1_2x from '../assets/images/bg_todo02_2x.png'
+import imgSrcPng2 from '../assets/images/bg_todo01.png'
+import imgSrcPng2_3x from '../assets/images/bg_todo01_3x.png'
+import imgSrcPng2_2x from '../assets/images/bg_todo01_2x.png'
+
 import LazyloadingNormal from './LazyloadNormal'
 import LazyObserver from './LazyObserver'
+import LazyBlurImage from './LazyBlurImage'
 import './style.css'
 
 const IS_TEST = true
-const lOAD_DATA_LENGTH = 100
+const lOAD_DATA_LENGTH = 50
+const imgSrcPngArr = [
+  {
+    src: imgSrcPng1,
+    large: imgSrcPng1_2x,
+  },
+  {
+    src: imgSrcPng2,
+    large: imgSrcPng2_2x,
+  },
+]
 const imgSrcArr = [imgSrc1, imgSrc2, imgSrc3, imgSrc4, imgSrc5]
+
 const imgWidthHeightClass = [
   'img_500x200',
   'img_400X150',
@@ -24,9 +44,10 @@ function componentH1() {
   return h1
 }
 
-function img() {
+function img(className) {
   const image = new Image()
-  image.classList.add('lazy')
+  if (className) image.classList.add(className)
+
   return image
 }
 
@@ -56,13 +77,17 @@ function imgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
 function init() {
   document.body.appendChild(componentH1())
   for (let i = 0; i < lOAD_DATA_LENGTH; i++) {
-    if (!IS_TEST) {
-      document.body.appendChild(
-        imgElMaker(img(), i % 5, imgSrcArr, imgWidthHeightClass),
-      )
-    } else {
-      document.body.appendChild(imgElMaker(img()))
-    }
+    // if (!IS_TEST) {
+    //   document.body.appendChild(
+    //     imgElMaker(img('lazy'), i % 5, imgSrcArr, imgWidthHeightClass),
+    //   )
+    // } else {
+    //   document.body.appendChild(imgElMaker(img('lazy')))
+    // }
+
+    document.body.appendChild(
+      LazyBlurImage(img('placeholder'), i % 2, imgSrcPngArr),
+    )
   }
   document.addEventListener('DOMContentLoaded', lazyLoader)
 

@@ -3,10 +3,44 @@ h1{
   color:red
 }
 
-img{display:block;width:250px;height:125px;margin:5px;background-color:#eee}
-
+/* img{display:block;width:250px;height:125px;margin:5px;background-color:#eee} */
+img{display:block;width:514px;height:343px;background-color: #eee}
 .img_500x200{width:500px;height:200px;}
 .img_400X150{width:400px;height:150px;}
 .img_120X60{width:120px;height:60px;}
 .img_1000X500{width:1000px;height:500px;}
 .img_2000X1000{width:2000px;height:1000px;}
+
+
+
+.container {
+  width:514px;height:343px;
+  position: relative;
+  overflow: hidden;
+}
+.container img{
+  width:100%;
+  background-color:transparent
+}
+
+
+.placeholder {
+  position: relative;
+  width: 100%;
+  filter: blur(10px);
+  transform: scale(1);
+}
+
+.picture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 1s linear;
+}
+
+.picture.loaded {
+  opacity: 1;
+}
