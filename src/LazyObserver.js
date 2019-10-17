@@ -20,8 +20,6 @@
 
 function LazyObserver() {
   let lazyImages = null
-  console.log('실행')
-
   return (() => {
     lazyImages = document.querySelectorAll('img.lazy')
     const imgObserber = new IntersectionObserver(observerHandler)

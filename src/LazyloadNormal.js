@@ -31,21 +31,26 @@ if (
   item.src = item.dataset.src
   item.classList.remove('lazy')
 }*/
+const DURATION_TIME = 10
 
-function isCurrentViewPortImageSrc(
+function isViewportUpSide(offsetTop, clientHeight, scrollTop) {
+  return offsetTop + clientHeight < scrollTop
+}
+function isViewportDownSide(offsetTop, windowInnerHeight, scrollTop) {
+  return offsetTop - windowInnerHeight > scrollTop
+}
+
+function updateLoadedImage(
+  el,
   offsetTop,
   clientHeight,
   windowInnerHeight,
   scrollTop,
 ) {
-  return (
-    offsetTop + clientHeight < scrollTop ||
-    offsetTop - windowInnerHeight > scrollTop
-  )
-}
+  const UPSIDE = isViewportUpSide(offsetTop, clientHeight, scrollTop)
+  const DOWNSIDE = isViewportDownSide(offsetTop, windowInnerHeight, scrollTop)
 
-function addLazyClass(isLazy, el) {
-  if (!isLazy) {
+  if (!(UPSIDE || DOWNSIDE)) {
     //   el.src = ''
     //   el.classList.add('lazy')
     // } else {
@@ -55,37 +60,35 @@ function addLazyClass(isLazy, el) {
 }
 
 function LazyloadingNormal(e) {
-  console.log('DOMContentLoaded')
-  let lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
-
   const lazyloader = () => {
+    let lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
+    console.log(lazyImages)
     let scrollTop = window.pageYOffset
     lazyImages.map(item => {
       //here
       let { offsetTop, clientHeight } = item
-      addLazyClass(
-        isCurrentViewPortImageSrc(
-          offsetTop,
-          clientHeight,
-          window.innerHeight,
-          scrollTop,
-        ),
+      let windowInnerHeight = window.innerHeight
+      updateLoadedImage(
         item,
+        offsetTop,
+        clientHeight,
+        windowInnerHeight,
+        scrollTop,
       )
     }) // end
     if (lazyImages.length === 0) {
-      document.removeEventListener('scroll', lazyThrottle)
-      window.removeEventListener('resize', lazyThrottle)
-      window.removeEventListener('orientationChange', lazyThrottle)
+      document.removeEventListener('scroll', lazyThrottleLoader)
+      window.removeEventListener('resize', lazyThrottleLoader)
+      window.removeEventListener('orientationChange', lazyThrottleLoader)
     }
   }
 
-  const lazyThrottle = throttle(lazyloader)
+  const lazyThrottleLoader = throttle(lazyloader)
   // throttle(() => console.log('작동중'))()
-  lazyThrottle() // 시작시 화면에 따른 로딩을 위함
-  document.addEventListener('scroll', lazyThrottle)
-  window.addEventListener('resize', lazyThrottle)
-  window.addEventListener('orientationChange', lazyThrottle)
+  lazyThrottleLoader() // 시작시 화면에 따른 로딩을 위함
+  document.addEventListener('scroll', lazyThrottleLoader)
+  window.addEventListener('resize', lazyThrottleLoader)
+  window.addEventListener('orientationChange', lazyThrottleLoader)
 }
 
 /*
@@ -118,13 +121,11 @@ function LazyloadingNormal(e) {
  */
 function throttle(func) {
   let throttleTimeout = null
-  console.log('클로져냐?')
   return () => {
-    if (throttleTimeout) {
-      console.log('1???')
+    if (throttleTimeout || throttleTimeout !== null) {
       clearTimeout(throttleTimeout)
     }
-    throttleTimeout = setTimeout(func, 10)
+    throttleTimeout = setTimeout(func, DURATION_TIME)
   }
 }
 

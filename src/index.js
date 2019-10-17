@@ -30,18 +30,21 @@ function img() {
   return image
 }
 
-function imgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
+function imgElMaker(index, imgSrcArr, imgWidthHeightClass) {
+  const el = img()
   if ((index !== 0 && !index) || !imgSrcArr || !imgWidthHeightClass) {
     index = 0
     imgSrcArr = [imgSrc2]
     imgWidthHeightClass = ['img_500x200']
   }
-  el.setAttribute('data-src', imgSrcArr[index])
-  el.classList.add(imgWidthHeightClass[index])
+  const srcIdx = index % (imgSrcArr.length - 1)
+  el.setAttribute('data-src', imgSrcArr[srcIdx])
+  el.classList.add(imgWidthHeightClass[srcIdx])
   el.id = index
   return el
 }
-function pureimgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
+function pureimgElMaker(index, imgSrcArr, imgWidthHeightClass) {
+  const el = img()
   if ((index !== 0 && !index) || !imgSrcArr || !imgWidthHeightClass) {
     index = 0
     imgSrcArr = [imgSrc2]
@@ -65,16 +68,10 @@ function pureimgElMaker(el, index, imgSrcArr, imgWidthHeightClass) {
 
 function init() {
   document.body.appendChild(componentH1())
-  for (let i = 0; i < lOAD_DATA_LENGTH; i++) {
-    if (!IS_TEST) {
-      document.body.appendChild(
-        imgElMaker(img(), i % 5, imgSrcArr, imgWidthHeightClass),
-      )
-    } else {
-      document.body.appendChild(
-        pureimgElMaker(img(), i % 5, imgSrcArr, imgWidthHeightClass),
-      )
-    }
+  if (!IS_TEST) {
+    drawImages(imgElMaker, lOAD_DATA_LENGTH)
+  } else {
+    drawImages(pureimgElMaker, lOAD_DATA_LENGTH)
   }
   if (!IS_TEST) {
     document.addEventListener('DOMContentLoaded', lazyLoader)
@@ -86,12 +83,19 @@ function init() {
    * 그밖에는 스크롤 및 다른 이벤트 적용
    */
 }
+
+function drawImages(img, lOAD_DATA_LENGTH) {
+  for (let index = 0; index < lOAD_DATA_LENGTH; index++) {
+    document.body.appendChild(img(index, imgSrcArr, imgWidthHeightClass))
+  }
+}
+
 init()
 
 // LazyloadingNormal()
 // document.addEventListener('DOMContentLoaded', LazyloadingNormal)
 function lazyLoader() {
-  if ('IntersectionObserver' in window) {
+  if (!'IntersectionObserver' in window) {
     LazyObserver()
   } else {
     LazyloadingNormal()
