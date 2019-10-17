@@ -67,6 +67,8 @@ function pureimgElMaker(index, imgSrcArr, imgWidthHeightClass) {
 */
 
 function init() {
+  // get images
+
   document.body.appendChild(componentH1())
   if (!IS_TEST) {
     drawImages(imgElMaker, lOAD_DATA_LENGTH)

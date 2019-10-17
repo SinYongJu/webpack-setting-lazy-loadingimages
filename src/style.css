@@ -3,8 +3,8 @@ h1{
   color:red
 }
 
-img{display:block;width:250px;height:125px;margin:5px;background-color:#eee}
-
+/* img{display:block;width:250px;height:125px;margin:5px;background-color:#eee} */
+img{display:block}
 .img_500x200{width:500px;height:200px;}
 .img_400X150{width:400px;height:150px;}
 .img_120X60{width:120px;height:60px;}

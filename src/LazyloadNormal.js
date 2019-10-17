@@ -60,10 +60,11 @@ function updateLoadedImage(
 }
 
 function LazyloadingNormal(e) {
+  let lazyImages = null
   const lazyloader = () => {
-    let lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
-    console.log(lazyImages)
+    lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
     let scrollTop = window.pageYOffset
+
     lazyImages.map(item => {
       //here
       let { offsetTop, clientHeight } = item
@@ -77,6 +78,7 @@ function LazyloadingNormal(e) {
       )
     }) // end
     if (lazyImages.length === 0) {
+      console.log('remove')
       document.removeEventListener('scroll', lazyThrottleLoader)
       window.removeEventListener('resize', lazyThrottleLoader)
       window.removeEventListener('orientationChange', lazyThrottleLoader)
@@ -85,7 +87,7 @@ function LazyloadingNormal(e) {
 
   const lazyThrottleLoader = throttle(lazyloader)
   // throttle(() => console.log('작동중'))()
-  lazyThrottleLoader() // 시작시 화면에 따른 로딩을 위함
+  lazyloader()
   document.addEventListener('scroll', lazyThrottleLoader)
   window.addEventListener('resize', lazyThrottleLoader)
   window.addEventListener('orientationChange', lazyThrottleLoader)

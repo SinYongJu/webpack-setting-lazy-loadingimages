@@ -8,7 +8,8 @@ module.exports = {
   mode: 'development',
   entry: {
     polyfill: '@babel/polyfill',
-    app: './src/index.js',
+    // app: './src//index.js',
+    app: './src/dynamic/index.js',
     // closure: './src/es6_closure/closure.js',
   },
   output: {

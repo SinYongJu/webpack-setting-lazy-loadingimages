@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src/js/ -w -d dist/js",
-    "local": "webpack && webpack-dev-server --open",
+    "local": "webpack-dev-server --open && webpack",
     "webpack": "webpack -w"
   },
   "author": "",
