@@ -18,14 +18,27 @@
  * the management of intersections as it sees fit.
  */
 
-function LazyObserver() {
-  let lazyImages = null
-  return (() => {
-    lazyImages = document.querySelectorAll('img.lazy')
+// function LazyObserver() {
+//   let count = 0
+//   console
+//   return (() => {
+//     const lazyImages = document.querySelectorAll('img.lazy')
+//     const imgObserber = new IntersectionObserver(observerHandler)
+//     Array.from(lazyImages).map(item => imgObserber.observe(item))
+//     count = ++count
+//     console.log(count)
+//   })()
+// }
+const LazyObserver = (function() {
+  let count = 0
+  return () => {
+    const lazyImages = document.querySelectorAll('img.lazy')
     const imgObserber = new IntersectionObserver(observerHandler)
     Array.from(lazyImages).map(item => imgObserber.observe(item))
-  })()
-}
+    count = ++count
+    console.log(count)
+  }
+})()
 
 function observerHandler(entries, obserber) {
   entries.map(entry => {
@@ -34,10 +47,6 @@ function observerHandler(entries, obserber) {
       target.classList.remove('lazy')
       target.src = target.dataset.src
     }
-    //  else {
-    //   target.classList.add('lazy')
-    //   target.src = ''
-    // }
   })
 }
 

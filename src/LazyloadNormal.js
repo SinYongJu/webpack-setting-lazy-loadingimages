@@ -1,3 +1,4 @@
+'use strict'
 // 1. javascript를 통한 방법
 /**
  * env condition
@@ -59,8 +60,10 @@ function updateLoadedImage(
   }
 }
 
-function LazyloadingNormal(e) {
+const LazyloadingNormal = (function() {
   let lazyImages = null
+  let count = 0
+
   const lazyloader = () => {
     lazyImages = [].slice.call(document.querySelectorAll('img.lazy'))
     let scrollTop = window.pageYOffset
@@ -78,20 +81,24 @@ function LazyloadingNormal(e) {
       )
     }) // end
     if (lazyImages.length === 0) {
-      console.log('remove')
       document.removeEventListener('scroll', lazyThrottleLoader)
       window.removeEventListener('resize', lazyThrottleLoader)
       window.removeEventListener('orientationChange', lazyThrottleLoader)
+      return
     }
   }
-
-  const lazyThrottleLoader = throttle(lazyloader)
+  let lazyThrottleLoader = null
   // throttle(() => console.log('작동중'))()
-  lazyloader()
-  document.addEventListener('scroll', lazyThrottleLoader)
-  window.addEventListener('resize', lazyThrottleLoader)
-  window.addEventListener('orientationChange', lazyThrottleLoader)
-}
+
+  return () => {
+    lazyloader()
+    lazyThrottleLoader = throttle(lazyloader)
+    ++count
+    document.addEventListener('scroll', lazyThrottleLoader)
+    window.addEventListener('resize', lazyThrottleLoader)
+    window.addEventListener('orientationChange', lazyThrottleLoader)
+  }
+})()
 
 /*
  if (offsetTop - window.innerHeight > scrollTop - clientHeight / 2) {

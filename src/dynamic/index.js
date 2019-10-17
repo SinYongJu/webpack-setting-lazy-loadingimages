@@ -8,8 +8,7 @@ import { fetchImages } from './images'
  *
  *
  */
-
-const isTest = true // 테스트 환경일때 변경 요망
+const isTest = !true
 const CLASS_LAZY = 'lazy'
 const h1 = title => {
   const h1 = document.createElement('h1')
@@ -39,43 +38,93 @@ const draw = (target, ...elements) => {
   })
 }
 
-const img = attrs => {
+const img = className => {
   const imgEl = new Image()
   imgEl.alt = ''
-  if (attrs) {
-    let { width, height, alt } = attrs
-    imgEl['width'] = width
-    imgEl['height'] = height
-    imgEl['alt'] = alt
-    if (!isTest) {
-      imgEl.dataset.src = attrs['data-src']
-      imgEl.dataset.prev = attrs['data-prev']
-      imgEl.classList.add(CLASS_LAZY)
-    } else {
-      imgEl.src = attrs['data-src']
-      imgEl.prev = attrs['data-prev']
-    }
+  if (className) imgEl.classList.add(className)
+  return imgEl
+}
+
+const setLazyImg = attrs => {
+  const imgEl = img()
+  let { width, height, alt } = attrs
+  imgEl['width'] = width
+  imgEl['height'] = height
+  imgEl['alt'] = alt
+  if (!isTest) {
+    imgEl.dataset.src = attrs['data-src']
+    imgEl.dataset.prev = attrs['data-prev']
+    imgEl.classList.add(CLASS_LAZY)
+  } else {
+    imgEl.src = attrs['data-src']
+    imgEl.prev = attrs['data-prev']
   }
   return imgEl
 }
 
-const drawImages = () => {
-  fetchImages()
-    .then(data => {
-      const images = data.map(item => img(item))
-      return images
-    })
-    .then(images => draw('#gallery', ...images))
-    .then(() => {
-      if (!isTest) {
-        lazyLoader()
-      }
-    })
-
-  //
+/*
+  여기서 부터 미디어 블러 처리 
+*/
+/**
+ *
+ * @param {string} className : class name
+ */
+const div = className => {
+  const div = document.createElement('div')
+  if (className) div.classList.add(className)
+  return div
 }
+
+const setMediumLazyImgContainer = attrs => {
+  let { width, height, alt } = attrs
+  const container = div('container')
+  const placeholder = img('placeholder')
+  const picture = img('picture')
+  placeholder.src = attrs['data-prev']
+  placeholder['width'] = width
+  placeholder['height'] = height
+  picture.src = attrs['data-src']
+  picture.alt = alt
+  picture.onload = () => {
+    picture.classList.add('loaded')
+  }
+  container.appendChild(picture)
+  container.appendChild(placeholder)
+  return container
+  // return container
+}
+
+const setTestMediumLazyImgContainer = attrs => {
+  let { width, height, alt } = attrs
+  const container = div('container')
+  const picture = img('')
+  picture.src = attrs['data-src']
+  picture['width'] = width
+  picture['height'] = height
+  picture.alt = alt
+  container.appendChild(picture)
+  return container
+}
+/**
+ *
+ * @param {function} func : 생성하려는 컴포넌트 함수를 넣는다
+ * @param {string} keywords : 불러올 이미지 검색 키워드
+ *
+ */
+const drawImages = (func, keywords) => {
+  fetchImages(keywords)
+    .then(data => {
+      return data
+    })
+    .then(data => data.map(item => func(item)))
+    .then(images => draw('#gallery', ...images))
+    .then(() => !isTest && lazyLoader())
+    .then(() => console.log('drawimages'))
+}
+
 const lazyLoader = () => {
-  if (!'IntersectionObserver' in window) {
+  // 브라우저 로드에 대한 설정이 필요 할듯 하다
+  if ('IntersectionObserver' in window) {
     LazyObserver()
   } else {
     LazyloadingNormal()
@@ -85,10 +134,35 @@ const lazyLoader = () => {
 const init = () => {
   const title = h1('Lazy loading Test')
   const logo = pixabaylogo()
-  draw('#header', title, logo)
-  drawImages()
+  // const div = setMediumLazyImgContainer()
 
-  // document.addEventListener('DOMContentLoaded', lazyLoader)
+  draw('#header', title, logo)
+  // draw('#gallery', div)
+  // drawImages(setLazyImg)
+  drawImages(setLazyImg)
+  // if (isTest) {
+  //   drawImages(setTestMediumLazyImgContainer, '')
+  // } else {
+  //   drawImages(setMediumLazyImgContainer, '')
+  // }
+
+  /**
+   *
+   * ui event에 대하여 공부 필요
+   *
+   * document.addEventListener('DOMContentLoaded', () => {
+   * console.log('실행')
+   * })
+   *
+   */
+  // window.addEventListener('DOMContentLoaded', () => {
+  //   console.log('실행 돔')
+
+  // })
+  // window.addEventListener('load', () => {
+  //   console.log('실행')
+  //   lazyLoader()
+  // })
 }
 
 init()
